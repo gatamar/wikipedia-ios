@@ -1128,10 +1128,16 @@ final class WMFAppViewController: UITabBarController, AppTabBarDelegate {
             selectedIndex = WMFAppTabType.places.rawValue
             currentTabNavigationController?.popToRootViewController(animated: animated)
             if let articleURL = activity.wmf_linkURL() {
+                DDLogDebug("Processing places with an article deeplink")
                 placesViewController.updateViewModeToMap()
                 placesViewController.showArticleURL(articleURL)
+                break
             }
-
+            if let placesCoord = activity.wmf_placesCoord() {
+                DDLogDebug("Processing places with a coordinate deeplink")
+                // TODO: find out what to show
+                break
+            }
         case .random:
             dismissPresentedViewControllers()
             showRandomArticleFromShortcut(siteURL: siteURL, animated: animated)

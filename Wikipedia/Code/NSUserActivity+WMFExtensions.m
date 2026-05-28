@@ -71,6 +71,12 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     }
     NSUserActivity *activity = [self wmf_pageActivityWithName:@"Places"];
     activity.webpageURL = articleURL;
+    [activity addUserInfoEntriesFromDictionary:@{
+        @"WMFCoord": @{
+            @"lat":[NSNumber numberWithDouble : 55.6713442],
+            @"long":[NSNumber numberWithDouble : 12.523785]
+        }
+    }];
     return activity;
 }
 
@@ -290,6 +296,10 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     } else {
         return self.webpageURL;
     }
+}
+
+- (NSDictionary *)wmf_placesCoord {
+    return self.userInfo[@"WMFCoord"];
 }
 
 - (NSURL *)wmf_contentURL {
