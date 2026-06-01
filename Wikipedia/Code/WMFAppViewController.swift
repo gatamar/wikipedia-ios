@@ -1128,14 +1128,17 @@ final class WMFAppViewController: UITabBarController, AppTabBarDelegate {
             selectedIndex = WMFAppTabType.places.rawValue
             currentTabNavigationController?.popToRootViewController(animated: animated)
             if let articleURL = activity.wmf_linkURL() {
-                DDLogDebug("Processing places with an article deeplink")
+                DDLogDebug("Processing places with an article deeplink: \(articleURL)")
                 placesViewController.updateViewModeToMap()
                 placesViewController.showArticleURL(articleURL)
                 break
             }
-            if let placesCoord = activity.wmf_placesCoord() {
-                DDLogDebug("Processing places with a coordinate deeplink")
-                // TODO: find out what to show
+            if let placesCoord = activity.wmf_placesCoord(),
+               let latitude = placesCoord["lat"] as? Double,
+               let longitude = placesCoord["long"] as? Double {
+                DDLogDebug("Processing places with a coordinate deeplink: \(latitude) \(longitude)")
+                placesViewController.updateViewModeToMap()
+                placesViewController.showArticles(near: .init(latitude: latitude, longitude: longitude))
                 break
             }
         case .random:

@@ -66,17 +66,31 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
         if ([item.name isEqualToString:@"WMFArticleURL"]) {
             NSString *articleURLString = item.value;
             articleURL = [NSURL URLWithString:articleURLString];
-            break;
+        }
+    }
+    NSMutableDictionary *coordDictionary = nil;
+    for (NSURLQueryItem *item in components.queryItems) {
+        if ([item.name isEqualToString:@"WMFCoord"]) {
+            coordDictionary = [NSMutableDictionary new];
+            NSURLComponents *components = [NSURLComponents new];
+            components.percentEncodedQuery = item.value;
+            for (NSURLQueryItem *coordQueryItem in components.queryItems) {
+                if ([coordQueryItem.name isEqual:@"lat"]) {
+                    NSNumber *num = @([coordQueryItem.value doubleValue]);
+                    assert(num != 0);
+                    [coordDictionary setObject:num forKey:@"lat"];
+                }
+                if ([coordQueryItem.name isEqual:@"long"]) {
+                    NSNumber *num = @([coordQueryItem.value doubleValue]);
+                    assert(num != 0);
+                    [coordDictionary setObject:num forKey:@"long"];
+                }
+            }
         }
     }
     NSUserActivity *activity = [self wmf_pageActivityWithName:@"Places"];
     activity.webpageURL = articleURL;
-    [activity addUserInfoEntriesFromDictionary:@{
-        @"WMFCoord": @{
-            @"lat":[NSNumber numberWithDouble : 55.6713442],
-            @"long":[NSNumber numberWithDouble : 12.523785]
-        }
-    }];
+    [activity addUserInfoEntriesFromDictionary:@{@"WMFCoord": coordDictionary}];
     return activity;
 }
 

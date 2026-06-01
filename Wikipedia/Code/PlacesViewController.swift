@@ -2087,6 +2087,15 @@ class PlacesViewController: ArticleLocationCollectionViewController, UISearchBar
         currentSearch = nil // will cause the default search to perform after re-centering
         recenterOnUserLocation(self)
     }
+    
+    @objc public func showArticles(near location: CLLocation) {
+        guard view != nil else { // force view instantiation
+            return
+        }
+
+        currentSearch = nil // will cause the default search to perform after re-centering
+        zoomAndPanMapView(toLocation: location)
+    }
 
     @objc public func showArticleURL(_ articleURL: URL) {
         guard let article = dataStore.fetchArticle(with: articleURL), let title = articleURL.wmf_title,
