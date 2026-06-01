@@ -73,7 +73,7 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
         if ([item.name isEqualToString:@"WMFCoord"]) {
             coordDictionary = [NSMutableDictionary new];
             NSURLComponents *components = [NSURLComponents new];
-            components.percentEncodedQuery = item.value;
+            [components setQuery:item.value];
             for (NSURLQueryItem *coordQueryItem in components.queryItems) {
                 if ([coordQueryItem.name isEqual:@"lat"]) {
                     NSNumber *num = @([coordQueryItem.value doubleValue]);
